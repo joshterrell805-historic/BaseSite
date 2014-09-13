@@ -46,7 +46,7 @@ function registerHelpers() {
                var path = root + '/' + filename;
                var helper = require(path);
                var name = filename.substring(0, filename.length -
-                config.responderExtension.length);
+                site.config.responderExtension.length);
                helpers[name] = helper;
             } else {
                var e = new Error('unrecognized filetype ' + path);
