@@ -1,0 +1,19 @@
+#!/bin/bash
+
+arguments="--scss --watch style:public/css --sourcemap=none"
+
+specialStyleString=`find style -name _.scss -print`
+specialStyles=(${specialStyleString//\n/})
+for i in "${!specialStyles[@]}"
+do
+   #without extension... style/posts/_.scss -> posts/_
+   path=${specialStyles[i]}
+   path="${path//style\//}"
+   path="${path//\.scss/}"
+   watch="--watch style/$path.scss:public/css/$path.css"
+   arguments="$arguments $watch"
+   echo $watch
+done
+
+echo $arguments
+sass $arguments

@@ -1,0 +1,25 @@
+<html>
+<head>
+   <title>{{title}}</title>
+   <link rel='shortcut icon' type='image/png' href='/favicon.png'>
+   {{#each stylesheets}}
+      {{{renderStylesheet this}}}
+   {{/each}}
+</head>
+<body>
+   <a name='page-top'></a>
+   <!-- header !-->
+   <div id='header' clas='small-12 small-centered columns'>
+      <a href='/'><h2 class='title'>{{title}}</h2></a>
+   </div>
+
+   <!-- content !-->
+   <div id='content'>
+      {{{renderPage page context}}}
+   </div>
+   
+   <!-- footer !-->
+   {{#each scripts}}
+      {{{renderScript this}}}
+   {{/each}}
+</body>

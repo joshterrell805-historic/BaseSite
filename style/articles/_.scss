@@ -1,0 +1,29 @@
+@import 'shared';
+
+$indent: 1.5rem;
+
+#content > .article {
+   @include main-content;
+   .timestamps {
+      color: #444;
+      font-style: italic;
+   }
+   .title {
+      text-align: center;
+   }
+   .body {
+      margin: $containerPadding;
+
+      li {
+         .title {
+            text-decoration: underline;
+         }
+      }
+      > ul {
+         margin-left: 2*$indent;
+      }
+   }
+   p:last-child {
+      margin-bottom: 0;
+   }
+}

@@ -1,0 +1,13 @@
+$headerHeight: 4rem;
+$containerBackground: rgba(10,10,10,0.7);
+$borderWidth: 0.2rem;
+$borderColor: #300;
+$textMargin: 1.4rem;
+$containerPadding: 2rem;
+
+// the main content div in the center of the screen
+@mixin main-content {
+   border: $borderWidth solid $borderColor;
+   background-color: $containerBackground;
+   padding: $textMargin;
+}

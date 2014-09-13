@@ -1,0 +1,17 @@
+#content > .article {
+  border: 0.2rem solid #300;
+  background-color: rgba(10, 10, 10, 0.7);
+  padding: 1.4rem; }
+  #content > .article .timestamps {
+    color: #444;
+    font-style: italic; }
+  #content > .article .title {
+    text-align: center; }
+  #content > .article .body {
+    margin: 2rem; }
+    #content > .article .body li .title {
+      text-decoration: underline; }
+    #content > .article .body > ul {
+      margin-left: 3rem; }
+  #content > .article p:last-child {
+    margin-bottom: 0; }

@@ -1,0 +1,15 @@
+#!/bin/bash
+
+if [[ "$1" == "-h" || "$1" == "--help" ]];
+then
+   echo "
+   Usage: exec/start
+
+      This script must be executed from the site's root.
+   "
+   exit 0
+fi
+
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+cd $DIR/..
+node --harmony Site.njs 

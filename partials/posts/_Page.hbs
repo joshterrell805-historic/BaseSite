@@ -1,0 +1,13 @@
+<div class='post row small-11 small-centered columns'>
+   {{#if notFound}}
+      <h1 class='title'>Post Not Found</h1>
+      <div class='body'><p>The post you requested could not be
+         found.</p></div>
+   {{else}}
+      <h1 class='title'>{{title}}</h1>
+      <div class='timestamps text-center'>Published:
+         <span class='timestamp' data-timestamp='{{publishTimestamp}}'></span>
+         </div>
+      <div class='body'>{{{body}}}</div>
+   {{/if}}
+</div>

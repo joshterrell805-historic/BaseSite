@@ -1,0 +1,10 @@
+#content > .message {
+  border: 0.2rem solid #300;
+  background-color: rgba(10, 10, 10, 0.7);
+  padding: 1.4rem; }
+  #content > .message > .title {
+    text-align: center; }
+  #content > .message > .body {
+    margin: 2rem; }
+  #content > .message p:last-child {
+    margin-bottom: 0; }

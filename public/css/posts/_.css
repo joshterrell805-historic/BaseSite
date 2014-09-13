@@ -1,0 +1,21 @@
+#content > .post {
+  border: 0.2rem solid #300;
+  background-color: rgba(10, 10, 10, 0.7);
+  padding: 1.4rem; }
+  #content > .post .timestamps {
+    color: #444;
+    font-style: italic; }
+  #content > .post > .title {
+    text-align: center; }
+  #content > .post > .body {
+    margin: 2rem; }
+    #content > .post > .body img {
+      width: 49%;
+      margin: 0;
+      padding: 1rem 1rem; }
+    #content > .post > .body > ul {
+      margin-left: 3rem; }
+    #content > .post > .body li .title {
+      text-decoration: underline; }
+  #content > .post p:last-child {
+    margin-bottom: 0; }
