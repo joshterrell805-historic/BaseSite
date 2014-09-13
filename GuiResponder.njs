@@ -54,7 +54,8 @@ GuiResponder.prototype.renderPage = function renderPage(pageName, context) {
 
    var template = handlebars.partials[this.basePagePartial];
    var rendered = template({
-      title: this.pageTitle,
+      pageTitle: this.pageTitle,
+      siteTitle: site.config.title,
       stylesheets: this.stylesheets,
       scripts: this.scripts,
       page: pageName,
