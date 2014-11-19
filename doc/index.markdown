@@ -4,7 +4,8 @@ Base Site is an http server that responds to requests for html pages.
 This application is only used for responding to requests for html pages and has
 no support for serving static assets.
 
-## [TODO](todo.html)
+### [TODO](todo.html)
+### [Authentication](authentication.html)
 
 ### Usage
 Create a new directory, add this project as a dependency, and run npm install.
