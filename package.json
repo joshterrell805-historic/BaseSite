@@ -10,6 +10,10 @@
       "marked": "~0.3.2",
       "debug": "~1.0.4",
       "promise": "~5.0.0",
-      "handlebars": "~2.0.0-beta.1"
+      "handlebars": "~2.0.0-beta.1",
+      "googleapis": "~1.0.21",
+      "csrf": "~2.0.2",
+      "cookie": "~0.1.2",
+      "mysql": "~2.5.3"
    }
 }

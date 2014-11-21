@@ -1,13 +1,34 @@
 module.exports = BaseResponder;
 
 var jugglypuff = require('jugglypuff'),
-    debug = require('debug')('basesite:BaseResponder');
+    debug = require('debug')('basesite:BaseResponder'),
+    Session = lib('Session'),
+    cookie = require('cookie');
 
 function BaseResponder() {
-   jugglypuff.Responder.apply(this, arguments);
+  jugglypuff.Responder.apply(this, arguments);
 }
 
 BaseResponder.prototype = Object.create(jugglypuff.Responder.prototype);
+
+// @Override
+BaseResponder.prototype.respond = function respond() {
+  this.cookies = this.req.headers.Cookie ?
+      cookie.parse(this.req.headers.Cookie) : {};
+  var args = arguments;
+  Session.parseRequest(this).done(function(session) {
+    this.session = session;
+    if (session && session.created) {
+      set cookie
+      return redirect(session.redirectUrl);
+    } else if (session && session.expired) {
+      set cookie
+      this.session = null;
+    }
+
+    jugglypuff.Responder.prototype.respond.apply(this, args);
+  }.bind(this));
+};
 
 BaseResponder.prototype.modulePathToPageName =
  function modulePathToPageName(_filename) {
