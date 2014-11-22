@@ -61,6 +61,9 @@ BaseSite.defaultConfig = {
    responderRoot: process.env.PWD + '/responders',
    documentRoot: process.env.PWD + '/public',
    responderExtension: '.njs',
+   // Time in seconds a session can be inactive for before the session expires.
+   // Session last_active time is updated every time user makes a request.
+   sessionDuration: 24 * 60 * 60,
 };
 
 /**

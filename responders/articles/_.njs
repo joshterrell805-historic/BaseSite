@@ -28,7 +28,7 @@ Responder.prototype.methods = {
          // TODO don't use 301, use 307.
          var redirectUrl = meta['301'];
          if (redirectUrl) {
-            res.writeHead('301', {
+            res.writeHead('307', {
                'Location': redirectUrl
             });
             res.end();

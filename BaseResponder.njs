@@ -13,17 +13,34 @@ BaseResponder.prototype = Object.create(jugglypuff.Responder.prototype);
 
 // @Override
 BaseResponder.prototype.respond = function respond() {
+  var args = arguments;
   this.cookies = this.req.headers.Cookie ?
       cookie.parse(this.req.headers.Cookie) : {};
-  var args = arguments;
-  Session.parseRequest(this).done(function(session) {
+
+  // create or restore the session.
+  Session.parseRequest(this.query, this.cookies).done(function(session) {
     this.session = session;
-    if (session && session.created) {
-      set cookie
-      return redirect(session.redirectUrl);
-    } else if (session && session.expired) {
-      set cookie
-      this.session = null;
+
+    if (session) {
+      var opts = {
+        path: '/',
+        expires: session.expired ? 0 :
+              new Date(Date.now() + 1000*60*60*24*365*10),
+        secure: true,
+        httpOnly: true
+      };
+      var cookieStr = cookie.serialize('sessionId', session.sessionId, opts);
+
+      if (session.created) {
+        this.res.writeHead('303', {
+            'Location': session.redirectUrl,
+            'Set-Cookie': [cookieStr]});
+        this.res.end();
+        return;
+      } else if (session.expired) {
+        this.res.setHeader('Set-Cookie', cookieStr);
+        this.session = null;
+      }
     }
 
     jugglypuff.Responder.prototype.respond.apply(this, args);
