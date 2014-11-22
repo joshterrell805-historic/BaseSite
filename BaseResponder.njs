@@ -14,22 +14,35 @@ BaseResponder.prototype = Object.create(jugglypuff.Responder.prototype);
 // @Override
 BaseResponder.prototype.respond = function respond() {
   var args = arguments;
-  this.cookies = this.req.headers.Cookie ?
-      cookie.parse(this.req.headers.Cookie) : {};
+  this.cookies = this.req.headers.cookie ?
+      cookie.parse(this.req.headers.cookie) : {};
+  // TODO remove me and make button
+  console.log(this.pathname);
+  console.log(Session.generateOauthUrl(this.pathname));
+  debug(this.cookies);
 
   // create or restore the session.
   Session.parseRequest(this.query, this.cookies).done(function(session) {
     this.session = session;
+    debug(session);
 
     if (session) {
       var opts = {
         path: '/',
-        expires: session.expired ? 0 :
+        expires: session.expired ? new Date() :
               new Date(Date.now() + 1000*60*60*24*365*10),
         secure: true,
         httpOnly: true
       };
-      var cookieStr = cookie.serialize('sessionId', session.sessionId, opts);
+      var cookieStr = cookie.serialize('sessionId', session.id, opts);
+
+      // invalid email, can't login
+      // TODO, create account? show "you can't login" page?
+      if (!session.id) {
+        this.res.writeHead('303', {'Location': session.redirectUrl});
+        this.res.end();
+        return;
+      }
 
       if (session.created) {
         this.res.writeHead('303', {
@@ -44,7 +57,7 @@ BaseResponder.prototype.respond = function respond() {
     }
 
     jugglypuff.Responder.prototype.respond.apply(this, args);
-  }.bind(this));
+  }.bind(this), this.onUnhandledMethodError.bind(this));
 };
 
 BaseResponder.prototype.modulePathToPageName =
