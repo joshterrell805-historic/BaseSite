@@ -154,7 +154,68 @@ BaseSite.prototype.setupGlobals = function setupGlobals() {
 
    global.requireBaseResponder = this.requireBaseResponder.bind(this);
 
+   var mysqlConnection = null;
+   var query = null;
+   Object.defineProperty(global, 'mysqlConn', {
+     'get': function getMysqlConnection() {
+        if (!mysqlConnection) {
+          createConnection();
+        }
+        return mysqlConnection;
+     }
+   });
+   Object.defineProperty(global, 'mysqlQuery', {
+    'get': function getQuery() {
+       if (!mysqlConnection) {
+         createConnection();
+       }
+       return query;
+    }
+   });
+   var mysql = require('mysql'); // TODO abstract me
+   var credentials = lib('.credentials');
+   var reconnects = 0;
+   var maxRecconnects = 5;
+   function setConnection(conn) {
+      mysqlConection = conn;
+      query = Promise.denodeify(conn.query.bind(conn));
+   }
+   function createConnection() {
+      connection = mysql.createConnection(credentials.mysql);
+      connection.on('error', function onConnectionError(err) {
+         if (err) {
+            if (err.code === 'PROTOCOL_CONNECTION_LOST') {
+               if (reconnects < maxRecconnects) {
+                  ++reconnects;
+                  createConnection();
+               } else {
+                  console.error('Max mysql reconnects exceeded.');
+                  throw err;
+               }
+            } else {
+               throw err;
+            }
+         } else {
+            reconnects = 0;
+         }
+      });
+      connection.connect();
+      setConnection(connection);
+   }
+   this.onStop(function() {
+     if (mysqlConnection) {
+       mysqlConnection.destroy();
+     }
+   });
+
    return Promise.resolve();
+};
+
+BaseSite.prototype.onStop = function onStop(func) {
+  if (!this.onStopFuncs_) {
+    this.onStopFuncs_ = [];
+  }
+  this.onStopFuncs_.push(func);
 };
 
 /**
@@ -192,5 +253,10 @@ BaseSite.prototype._start = function _start() {
    var jugglypuff = require('jugglypuff');
    var options = _.pick(this.config, 'hostname', 'port', 'responderRoot');
    this.server = new jugglypuff.Server(options);
+   this.server.onStop = function() {
+      for (var i = 0; this.onStopFuncs_ && i < this.onStopFuncs_.length; ++i) {
+        this.onStopFuncs_[i]();
+      }
+   }.bind(this);
    return this.server.start();
 };
