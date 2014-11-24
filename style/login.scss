@@ -1,0 +1,27 @@
+@import 'shared';
+
+$indent: 1.5rem;
+
+#content > .message {
+   @include main-content;
+
+   > .title {
+      text-align: center;
+   }
+
+   > .body {
+      margin: $containerPadding;
+   }
+
+   p:last-child {
+      margin-bottom: 0;
+   }
+}
+
+#google-plus-signin {
+  background-color: transparent;
+  border: 0px;
+  width: 120px;
+  padding: 0px;
+  height: 40px;
+}

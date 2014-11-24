@@ -16,46 +16,17 @@ BaseResponder.prototype.respond = function respond() {
   var args = arguments;
   this.cookies = this.req.headers.cookie ?
       cookie.parse(this.req.headers.cookie) : {};
-  // TODO remove me and make button
-  console.log(this.pathname);
-  console.log(Session.generateOauthUrl(this.pathname));
-  debug(this.cookies);
+  debug("cookies: %o", this.cookies);
 
-  // create or restore the session.
-  Session.parseRequest(this.query, this.cookies).done(function(session) {
+  // restore the session if exists.
+  Session.parseRequest(this.cookies).done(function(session) {
     this.session = session;
-    debug(session);
-
-    if (session) {
-      var opts = {
-        path: '/',
-        expires: session.expired ? new Date() :
-              new Date(Date.now() + 1000*60*60*24*365*10),
-        secure: true,
-        httpOnly: true
-      };
-      var cookieStr = cookie.serialize('sessionId', session.id, opts);
-
-      // invalid email, can't login
-      // TODO, create account? show "you can't login" page?
-      if (!session.id) {
-        this.res.writeHead('303', {'Location': session.redirectUrl});
-        this.res.end();
-        return;
-      }
-
-      if (session.created) {
-        this.res.writeHead('303', {
-            'Location': session.redirectUrl,
-            'Set-Cookie': [cookieStr]});
-        this.res.end();
-        return;
-      } else if (session.expired) {
-        this.res.setHeader('Set-Cookie', cookieStr);
-        this.session = null;
-      }
+    debug("session: %o", session);
+    if (session && session.expired) {
+      debug("session expired; deleting cookie");
+      this.res.setHeader('Set-Cookie', this.deleteSessionCookieStr);
+      this.session = null;
     }
-
     jugglypuff.Responder.prototype.respond.apply(this, args);
   }.bind(this), this.onUnhandledMethodError.bind(this));
 };
@@ -88,3 +59,5 @@ BaseResponder.prototype.onUnhandledMethodError =
     '500: Unexpected Server Error' : err.toString();
    this.res.end(message);
 };
+
+BaseResponder.prototype.deleteSessionCookieStr = 'sessionId=CookieDeleted; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT; Secure';

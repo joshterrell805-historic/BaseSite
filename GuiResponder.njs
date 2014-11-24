@@ -1,6 +1,6 @@
 module.exports = GuiResponder;
 
-var BaseResponder = require('./BaseResponder.njs');
+var BaseResponder = require('./BaseResponder.njs'),
     debug = require('debug')('basesite:GuiResponder');
 
 function GuiResponder() {

@@ -177,7 +177,7 @@ BaseSite.prototype.setupGlobals = function setupGlobals() {
    var reconnects = 0;
    var maxRecconnects = 5;
    function setConnection(conn) {
-      mysqlConection = conn;
+      mysqlConnection = conn;
       query = Promise.denodeify(conn.query.bind(conn));
    }
    function createConnection() {
@@ -187,7 +187,7 @@ BaseSite.prototype.setupGlobals = function setupGlobals() {
             if (err.code === 'PROTOCOL_CONNECTION_LOST') {
                if (reconnects < maxRecconnects) {
                   ++reconnects;
-                  createConnection();
+                  setTimeout(createConnection, 50);
                } else {
                   console.error('Max mysql reconnects exceeded.');
                   throw err;
@@ -204,7 +204,14 @@ BaseSite.prototype.setupGlobals = function setupGlobals() {
    }
    this.onStop(function() {
      if (mysqlConnection) {
-       mysqlConnection.destroy();
+       var debug = require('debug')('BaseSite');
+       debug('killing mysql');
+       mysqlConnection.end(function(err) {
+          if (err) {
+            debug('failed to kill');
+            debug(err);
+          }
+       });
      }
    });
 
