@@ -10,7 +10,8 @@ Responder.prototype = Object.create(GuiResponder.prototype);
 
 Responder.prototype.methods = {
   'GET': function* GET(cont, res) {
-    var doc = yield cont.p(new Doc({pathname: this.pathname}));
+    var doc = yield cont.p(Doc.findByTitle(Doc.pathnameToTitle(this.pathname)));
+
     if (!doc) {
       res.writeHead('404');
       this.pageTitle = 'Article Not Found';
