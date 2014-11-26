@@ -11,6 +11,13 @@
    <!-- header !-->
    <div id='header' clas='small-12 small-centered columns'>
       <a href='/'><h2 class='title'>{{siteTitle}}</h2></a>
+      <span class='user'>
+        {{#if session}}
+          <p>{{session.user.email}}</p>
+        {{else}}
+          <a href="{{loginUrl}}"><img id="google-plus-signin" src="https://developers.google.com/+/images/branding/sign-in-buttons/Red-signin_Medium_base_44dp.png"></img></a>
+        {{/if}}
+      </span>
    </div>
 
    <!-- content !-->

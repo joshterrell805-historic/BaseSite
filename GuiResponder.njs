@@ -1,7 +1,8 @@
 module.exports = GuiResponder;
 
 var BaseResponder = require('./BaseResponder.njs'),
-    debug = require('debug')('basesite:GuiResponder');
+    debug = require('debug')('basesite:GuiResponder'),
+    Session = lib('Session');
 
 function GuiResponder() {
    BaseResponder.apply(this, arguments);
@@ -56,6 +57,8 @@ GuiResponder.prototype.renderPage = function renderPage(pageName, context) {
    var rendered = template({
       pageTitle: this.pageTitle,
       siteTitle: site.config.title,
+      session: this.session,
+      loginUrl: this.session ? false : Session.generateOauthUrl(this.pathname),
       stylesheets: this.stylesheets,
       scripts: this.scripts,
       page: pageName,

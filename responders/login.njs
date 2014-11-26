@@ -16,50 +16,54 @@ Responder.prototype.methods = {
       this.stylesheets.push('/base/css/login.css');
       var code = this.query.code;
       var state = this.query.state;
-      if (code && state) {
+      var context = {};
+      if (this.session) {
+        // POSSIBILITY 1: USER IS ALREADY LOGGED IN
+        context.message = 'You are already logged in.';
+      } else {
         try {
           var session = yield cont.p(Session.login(code, state));
           debug('login session: %o', session);
+          // POSSIBILITY 2: USER ATTEMPTED TO LOGIN BUT NO ACCOUNT
           if (!session.id) {
-            var errorMessage = 'This email is not associated with an account.';
+            context.message = 'Your gmail account has not been authorized to login to this website. <a href="mailto:josh@joshterrell.com">Contact me</a> to request authorization.';
+          } else if (session.created) {
+            // POSSIBILITY 3: USER LOGGED IN SUCCESSFULLY
+            context.message = 'You have successfully logged in.';
+            var opts = {
+              path: '/',
+              expires: session.expired ? new Date() :
+                    new Date(Date.now() + 1000*60*60*24*365*10),
+              secure: true,
+              httpOnly: true
+            };
+            var cookieStr = cookie.serialize('sessionId', session.id, opts);
+            this.res.setHeader('Set-Cookie', cookieStr);
           }
+
+          if (session.redirectUrl) {
+            // the CSRF was valid which means that this request does not
+            // originate from a third party. If the user changed the
+            // redirectUrl value that's their own doing.
+            context.message += ' Return to <a href="' + session.redirectUrl
+                + '">where you came from</a>.';
+          };
         } catch (e) {
+          // POSSIBILITY 4: AN ERROR OCCURED IN THE LOGIN REQUEST
           switch(e.code) {
           case 'INVALID_CSRF':
           case 'INVALID_JSON':
           case 'MISSING_FIELD':
             debug(e);
-            var errorMessage = 'Something went wrong when logging you in.';
+            context.message = 'An error occured when logging you in.';
             break;
           default:
             throw e;
             break;
           }
         }
-
-        assert(!!errorMessage != (session && !!session.id));
-        var loggedIn = !errorMessage;
-      } else {
-        var loggedIn = !!this.session;
       }
 
-
-      if (session && session.created) {
-        var opts = {
-          path: '/',
-          expires: session.expired ? new Date() :
-                new Date(Date.now() + 1000*60*60*24*365*10),
-          secure: true,
-          httpOnly: true
-        };
-        var cookieStr = cookie.serialize('sessionId', session.id, opts);
-        this.res.setHeader('Set-Cookie', cookieStr);
-      }
-
-      this.displayPage(__filename, {
-        loggedIn: loggedIn,
-        loginUrl: loggedIn ? '/' : Session.generateOauthUrl(),
-        errorMessage: errorMessage,
-      });
+      this.displayPage(__filename, context);
    }
 };
