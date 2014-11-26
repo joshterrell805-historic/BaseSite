@@ -11,6 +11,13 @@
    <!-- header !-->
    <div id='header' clas='small-12 small-centered columns'>
       <a href='/'><h2 class='title'>{{siteTitle}}</h2></a>
+      <span class='page-actions'>
+        {{#each pageActions}}
+          <span data-tooltip aria-haspopup="true" class="page-action tip-bottom" title="{{tooltip}}">
+            <a href="{{href}}"><img src="{{{src}}}"></img></a>
+          </span>
+        {{/each}}
+      </span>
       <span class='user'>
         {{#if session}}
           <p>{{session.user.email}}</p>

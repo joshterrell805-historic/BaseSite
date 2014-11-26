@@ -27,6 +27,15 @@ function GuiResponder() {
       type: 'url',
       url: '/base/js/TimestampToDate.js',
    }];
+
+   // [{href, src}}]
+   this.pageActions = [];
+   // TODO temp
+   this.pageActions.push({href: 'javascript:alert("ya clicked me")', src: '/img/icon/view.png', tooltip: 'View'});
+   this.pageActions.push({href: 'javascript:alert("ya clicked me")', src: '/img/icon/edit.png', tooltip: 'Edit'});
+   this.pageActions.push({href: 'javascript:alert("ya clicked me")', src: '/img/icon/private.png', tooltip: 'Make Private'});
+   this.pageActions.push({href: 'javascript:alert("ya clicked me")', src: '/img/icon/public.png', tooltip: 'Make Public'});
+   this.pageActions.push({href: 'javascript:alert("ya clicked me")', src: '/img/icon/submit.png', tooltip: 'Submit'});
 }
 
 GuiResponder.prototype = Object.create(BaseResponder.prototype);
@@ -62,6 +71,7 @@ GuiResponder.prototype.renderPage = function renderPage(pageName, context) {
       stylesheets: this.stylesheets,
       scripts: this.scripts,
       page: pageName,
+      pageActions: this.pageActions,
       context: context,
    });
 
