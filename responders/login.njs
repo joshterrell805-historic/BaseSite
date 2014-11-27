@@ -22,7 +22,8 @@ Responder.prototype.methods = {
         context.message = 'You are already logged in.';
       } else {
         try {
-          var session = yield cont.p(Session.login(code, state));
+          var session = yield cont.p(Session.login(code, state,
+              this.cookies.csrf));
           debug('login session: %o', session);
           // POSSIBILITY 2: USER ATTEMPTED TO LOGIN BUT NO ACCOUNT
           if (!session.id) {
@@ -34,6 +35,7 @@ Responder.prototype.methods = {
             // POSSIBILITY 3: USER LOGGED IN SUCCESSFULLY
             context.message = 'You have successfully logged in.';
             this.resetCsrf();
+            this.session = session;
             this.setCookie('sessionId', session.id, {
               expires: new Date(Date.now() + 1000*60*60*24*365*10),
             });

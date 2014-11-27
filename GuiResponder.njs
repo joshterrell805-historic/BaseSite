@@ -2,7 +2,8 @@ module.exports = GuiResponder;
 
 var BaseResponder = require('./BaseResponder.njs'),
     debug = require('debug')('basesite:GuiResponder'),
-    Session = lib('Session');
+    Session = lib('Session'),
+    assert = require('assert');
 
 function GuiResponder() {
    BaseResponder.apply(this, arguments);
@@ -54,12 +55,17 @@ GuiResponder.prototype.renderPage = function renderPage(pageName, context) {
       pageName = this.modulePathToPageName(pageName);
    }
 
+   // This probably isn't the *best* way.. but it needs to happen some how.
+   var csrf = this.cookiesToSet_['csrf'] || this.cookies.csrf;
+   assert(!!csrf);
+
    var template = handlebars.partials[this.basePagePartial];
    var rendered = template({
       pageTitle: this.pageTitle,
       siteTitle: site.config.title,
       session: this.session,
-      loginUrl: this.session ? false : Session.generateOauthUrl(this.pathname),
+      loginUrl: this.session ? false :
+          Session.generateOauthUrl(this.pathname, csrf),
       stylesheets: this.stylesheets,
       scripts: this.scripts,
       page: pageName,

@@ -2,7 +2,8 @@ module.exports = BaseResponder;
 
 var jugglypuff = require('jugglypuff'),
     debug = require('debug')('basesite:BaseResponder'),
-    Session = lib('Session');
+    Session = lib('Session'),
+    cookie = require('cookie');
 
 function BaseResponder() {
   jugglypuff.Responder.apply(this, arguments);
@@ -29,7 +30,12 @@ BaseResponder.prototype.respond = function respond() {
   }
 
   // restore the session if exists.
-  Session.parseRequest(this.cookies).done(function(session) {
+  Session.parseRequest(this.cookies)
+  .then(null, function(err) {
+    // this is a sql error
+    debug(err);
+    return null;
+  }).done(function(session) {
     this.session = session;
     debug("session: %o", session);
     if (session && session.expired) {
@@ -38,7 +44,7 @@ BaseResponder.prototype.respond = function respond() {
       this.session = null;
     }
     jugglypuff.Responder.prototype.respond.apply(this, args);
-  }.bind(this), this.onUnhandledMethodError.bind(this));
+  }.bind(this));
 };
 
 /**
