@@ -9,18 +9,18 @@ function Responder() {
 Responder.prototype = Object.create(GuiResponder.prototype);
 
 Responder.prototype.methods = {
-  'GET': function* GET(cont, res) {
+  'GET': function* GET(cont) {
 
     var context = {};
     if (!this.session) {
       context.loggedIn = false;
-      res.writeHead('401');
+      this.setResponseCode('401');
       this.pageTitle = 'You must be logged in to edit drafts.';
     } else {
       context.loggedIn = true;
       var draft = yield cont.p(Draft.find(Draft.pathnameToId(this.pathname)));
       if (!draft) {
-        res.writeHead('404');
+        this.setResponseCode('404');
         this.pageTitle = 'Draft not found.';
         context.notFound = true;
       } else {
@@ -81,6 +81,6 @@ Responder.prototype.methods = {
       type: 'url',
       url: '/base/js/drafts/_.js'
     });
-    this.displayPage(__filename, context);
+    return this.renderPage(__filename, context);
   },
 };

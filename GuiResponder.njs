@@ -46,14 +46,6 @@ GuiResponder.prototype.pageTitle = site.config.title;
 GuiResponder.prototype.basePagePartial = '/shared/page';
 
 /**
- * Render the page then send it as the response and end the connection.
- */
-GuiResponder.prototype.displayPage = function displayPage(pageName, context) {
-   var rendered = this.renderPage(pageName, context);
-   this.res.end(rendered);
-};
-
-/**
  * Render the page corresponding to `path` which is __filename from within
  *  the responder module that wants to render.
  */

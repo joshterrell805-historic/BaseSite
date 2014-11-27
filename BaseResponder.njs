@@ -2,14 +2,20 @@ module.exports = BaseResponder;
 
 var jugglypuff = require('jugglypuff'),
     debug = require('debug')('basesite:BaseResponder'),
-    Session = lib('Session'),
-    cookie = require('cookie');
+    Session = lib('Session');
 
 function BaseResponder() {
   jugglypuff.Responder.apply(this, arguments);
 }
 
 BaseResponder.prototype = Object.create(jugglypuff.Responder.prototype);
+
+BaseResponder.prototype.resetCsrf = function resetCsrf() {
+    this.setCookie('csrf', Session.csrf(), {
+      expires: new Date(Date.now() + 1000*60*60*24*365*10),
+      httpOnly: false
+    }, true);
+};
 
 // @Override
 BaseResponder.prototype.respond = function respond() {
@@ -18,17 +24,30 @@ BaseResponder.prototype.respond = function respond() {
       cookie.parse(this.req.headers.cookie) : {};
   debug("cookies: %o", this.cookies);
 
+  if (!this.cookies || !this.cookies.csrf) {
+    this.resetCsrf();
+  }
+
   // restore the session if exists.
   Session.parseRequest(this.cookies).done(function(session) {
     this.session = session;
     debug("session: %o", session);
     if (session && session.expired) {
       debug("session expired; deleting cookie");
-      this.res.setHeader('Set-Cookie', this.deleteSessionCookieStr);
+      this.setHeader('Set-Cookie', this.deleteSessionCookieStr);
       this.session = null;
     }
     jugglypuff.Responder.prototype.respond.apply(this, args);
   }.bind(this), this.onUnhandledMethodError.bind(this));
+};
+
+/**
+ * should be called in every post request.
+ */
+BaseResponder.prototype.validateCsrf = function validateCsrf() {
+  if (!this.cookies.csrf || (this.req.headers.csrf !== this.cookies.csrf)) {
+    throw new Error('Invalid CSRF');
+  }
 };
 
 BaseResponder.prototype.modulePathToPageName =
@@ -50,14 +69,15 @@ BaseResponder.prototype.modulePathToPageName =
 };
 
 // @override
-BaseResponder.prototype.onUnhandledMethodError =
- function onUnHandledMethodError(err) {
-   var debug = require('debug')('basesite:unhandledMethodError');
-   debug(err);
-   this.res.writeHead('500');
-   var message = site.config.isProduction ?
-    '500: Unexpected Server Error' : err.toString();
-   this.res.end(message);
+BaseResponder.prototype.onUnhandledError =
+    function onUnHandledError(err) {
+  var debug = require('debug')('basesite:unhandledMethodError');
+  debug(err);
+  // TODO if (err.message === 'Invalid CSRF')
+  this.setResponseCode('500', true);
+  var message = site.config.isProduction ?
+   '500: Unexpected Server Error' : err.toString();
+  return message;
 };
 
 BaseResponder.prototype.deleteSessionCookieStr = 'sessionId=CookieDeleted; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT; Secure';

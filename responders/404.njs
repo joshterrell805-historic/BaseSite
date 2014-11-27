@@ -7,8 +7,8 @@ function Responder() {
 Responder.prototype = Object.create(GuiResponder.prototype);
 
 Responder.prototype.methods = {
-   'GET': function* GET(cont, res) {
+   'GET': function* GET(cont) {
       this.stylesheets.push('/base/css/404.css');
-      this.displayPage(__filename, {});
+      return this.renderPage(__filename, {});
    }
 };

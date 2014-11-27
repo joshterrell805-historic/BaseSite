@@ -9,17 +9,17 @@ function Responder() {
 Responder.prototype = Object.create(GuiResponder.prototype);
 
 Responder.prototype.methods = {
-  'GET': function* GET(cont, res) {
+  'GET': function* GET(cont) {
     var doc = yield cont.p(Doc.findByTitle(Doc.pathnameToTitle(this.pathname)));
 
     if (!doc) {
-      res.writeHead('404');
+      this.setResponseCode('404');
       this.pageTitle = 'Post Not Found';
       var context = {
         notFound: true,
       };
     } else if (doc.private && !this.session) {
-      res.writeHead('401');
+      this.setResponseCode('401');
       this.pageTitle = 'Private Post';
       var context = {
         private: true,
@@ -34,6 +34,6 @@ Responder.prototype.methods = {
     }
 
     this.stylesheets.push('/base/css/posts/_.css');
-    this.displayPage(__filename, context);
+    return this.renderPage(__filename, context);
   },
 };

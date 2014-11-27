@@ -10,7 +10,8 @@ function Responder() {
 Responder.prototype = Object.create(ApiResponder.prototype);
 
 Responder.prototype.methods = {
-  'GET': function* GET(cont, res) {
+  /** TODO **/
+  'GET': function* GET(cont) {
     var obj;
     if (!this.session) {
       this.responseCode = 401;
@@ -24,10 +25,12 @@ Responder.prototype.methods = {
     this.reply(obj);
   },
   /** update a draft..creating is gui request. **/
-  'POST': function* POST(cont, res) {
+  'POST': function* POST(cont) {
+    this.validateCsrf();
+
     if (!this.session) {
-      this.responseCode = 401;
-      return this.reply({
+      this.setResponseCode('401');
+      return JSON.stringify({
         success: false,
         code: 'UNAUTHORIZED',
       });
@@ -39,8 +42,8 @@ Responder.prototype.methods = {
       debug(draft);
     } catch(e) {
       debug('invalid json: %s', this.body);
-      this.responseCode = 400;
-      return this.reply({
+      this.setResponseCode('400');
+      return JSON.stringify({
         success: false,
         code: 'INVALID_JSON',
       });
@@ -48,11 +51,11 @@ Responder.prototype.methods = {
 
     try {
       yield cont.p(Draft.update(draft));
-      return this.reply({success: true});
+      return JSON.stringify({success: true});
     } catch (e) {
       debug(e);
-      this.responseCode = 400;
-      return this.reply({
+      this.setResponseCode('400');
+      return JSON.stringify({
         success: false,
         message: 'INVALID_DRAFT'
       });

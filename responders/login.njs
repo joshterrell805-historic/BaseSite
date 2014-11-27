@@ -12,7 +12,7 @@ function Responder() {
 Responder.prototype = Object.create(GuiResponder.prototype);
 
 Responder.prototype.methods = {
-   'GET': function* GET(cont, res) {
+   'GET': function* GET(cont) {
       this.stylesheets.push('/base/css/login.css');
       var code = this.query.code;
       var state = this.query.state;
@@ -26,19 +26,17 @@ Responder.prototype.methods = {
           debug('login session: %o', session);
           // POSSIBILITY 2: USER ATTEMPTED TO LOGIN BUT NO ACCOUNT
           if (!session.id) {
-            context.message = 'Your gmail account has not been authorized to login to this website. <a href="mailto:josh@joshterrell.com">Contact me</a> to request authorization.';
+            context.message = 'Your gmail account has not been authorized to '
+              + 'login to this website. '
+              + '<a href="mailto:josh@joshterrell.com">Contact me</a> to '
+              + 'request authorization.';
           } else if (session.created) {
             // POSSIBILITY 3: USER LOGGED IN SUCCESSFULLY
             context.message = 'You have successfully logged in.';
-            var opts = {
-              path: '/',
-              expires: session.expired ? new Date() :
-                    new Date(Date.now() + 1000*60*60*24*365*10),
-              secure: true,
-              httpOnly: true
-            };
-            var cookieStr = cookie.serialize('sessionId', session.id, opts);
-            this.res.setHeader('Set-Cookie', cookieStr);
+            this.resetCsrf();
+            this.setCookie('sessionId', session.id, {
+              expires: new Date(Date.now() + 1000*60*60*24*365*10),
+            });
           }
 
           if (session.redirectUrl) {
@@ -64,6 +62,6 @@ Responder.prototype.methods = {
         }
       }
 
-      this.displayPage(__filename, context);
+      return this.renderPage(__filename, context);
    }
 };
