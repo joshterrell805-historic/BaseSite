@@ -136,6 +136,7 @@ BaseSite.prototype.setupGlobals = function setupGlobals() {
    global.assert = require('assert');
    global.BaseResponder = require('./BaseResponder.njs');
    global.GuiResponder = require('./GuiResponder.njs');
+   global.ApiResponder = require('./ApiResponder.njs');
    require('ExtendableError');
    //TODO
    // global.AjaxResponder = require('./AjaxResponder.njs');

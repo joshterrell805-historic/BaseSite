@@ -1,0 +1,9 @@
+{
+  "name": "BaseSite",
+  "version": "0.0.0",
+  "homepage": "https://github.com/joshterrell805/BaseSite",
+  "dependencies": {
+      "CodeMirror": "git://github.com/joshterrell805/CodeMirror.git",
+      "blueimp-md5": "git://github.com/joshterrell805/JavaScript-MD5.git"
+  }
+}

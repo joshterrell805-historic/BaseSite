@@ -1,0 +1,15 @@
+<div class='draft row small-11 small-centered columns'>
+   {{#if loggedIn}}
+     {{#if notFound}}
+        <h1 class='title'>Draft Not Found</h1>
+        <div class='body'><p>The draft you requested could not be found.</p></div>
+      {{else}}
+        <script>
+          var draft = {{{draft}}};
+        </script>
+      {{/if}}
+   {{else}}
+     <h1 class='title'>Not Authorized</h1>
+     <div class='body'><p>You must be logged in to edit drafts.</p></div>
+   {{/if}}
+</div>

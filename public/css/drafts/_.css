@@ -1,0 +1,17 @@
+#content > .draft {
+  border: 0.2rem solid #300;
+  background-color: rgba(10, 10, 10, 0.7);
+  padding: 1.4rem; }
+  #content > .draft .timestamps {
+    color: #444;
+    font-style: italic; }
+  #content > .draft .title {
+    text-align: center; }
+  #content > .draft .body {
+    margin: 2rem; }
+    #content > .draft .body li .title {
+      text-decoration: underline; }
+    #content > .draft .body > ul {
+      margin-left: 3rem; }
+  #content > .draft *:last-child {
+    margin-bottom: 0; }
