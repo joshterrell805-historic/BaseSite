@@ -20,6 +20,9 @@ function GuiResponder() {
       url: '//code.jquery.com/jquery-2.1.1.min.js',
    },{
       type: 'url',
+      url: '/base/js/jquery-cookie.js',
+   },{
+      type: 'url',
       url: '//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.2/highlight.min.js',
    },{
       type: 'code',

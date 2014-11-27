@@ -38,10 +38,10 @@ Responder.prototype.methods = {
 
     try {
       // TODO don't bother reading post data if not logged in.
-      var draft = JSON.parse(this.body);
+      var draft = JSON.parse(this.req.body);
       debug(draft);
     } catch(e) {
-      debug('invalid json: %s', this.body);
+      debug('invalid json: %s', this.req.body);
       this.setResponseCode('400');
       return JSON.stringify({
         success: false,

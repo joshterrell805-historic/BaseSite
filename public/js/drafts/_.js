@@ -41,6 +41,9 @@ function updateBackend() {
     type: 'POST',
     url: '/api/draft',
     data: JSON.stringify(draft),
+    beforeSend: function(response) {
+      response.setRequestHeader('csrf', $.cookie('csrf'));
+    },
     success: onSuccess,
     error: onError,
     processData: false,
@@ -55,7 +58,7 @@ function updateBackend() {
     500); // don't want this getting sent too often
   }
   function onError(xhr, textStatus) {
-    console.error(xhr);
     alert('error updating server!');
+    console.error(xhr);
   }
 }
