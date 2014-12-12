@@ -40,6 +40,8 @@
     transform: translate(-50%, -50%);
     -moz-transform: translate(-50%, -50%);
     -webkit-transform: translate(-50%, -50%); }
+    #header .page-actions .page-action.hidden {
+      display: none; }
     #header .page-actions .page-action {
       box-sizing: content-box;
       border: 0.2rem solid #300;

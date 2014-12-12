@@ -3,7 +3,8 @@ module.exports = BaseResponder;
 var jugglypuff = require('jugglypuff'),
     debug = require('debug')('basesite:BaseResponder'),
     Session = lib('Session'),
-    cookie = require('cookie');
+    cookie = require('cookie'),
+    querystring = require('querystring');
 
 function BaseResponder() {
   jugglypuff.Responder.apply(this, arguments);
@@ -52,7 +53,12 @@ BaseResponder.prototype.respond = function respond() {
  */
 BaseResponder.prototype.validateCsrf = function validateCsrf() {
   if (!this.cookies.csrf || (this.req.headers.csrf !== this.cookies.csrf)) {
-    throw new Error('Invalid CSRF');
+    try {
+      var csrf = this.parsePostForm().csrf;
+    } catch (e) {}
+
+    if (csrf !== this.cookies.csrf)
+      throw new Error('Invalid CSRF');
   }
 };
 
@@ -85,5 +91,15 @@ BaseResponder.prototype.onUnhandledError =
    '500: Unexpected Server Error' : err.toString();
   return message;
 };
+
+BaseResponder.prototype.parsePostForm = function parsePostForm() {
+  return JSON.parse(decodeURIComponent(querystring.parse(this.req.body).data));
+}
+
+BaseResponder.prototype.redirect = function redirect(code, url) {
+  // code: 301 (perm) 307 temp, 303 after post
+  this.setResponseCode(code);
+  this.setHeader('Location', url);
+}
 
 BaseResponder.prototype.deleteSessionCookieStr = 'sessionId=CookieDeleted; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT; Secure';

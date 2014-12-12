@@ -53,6 +53,9 @@
       -moz-transform: translate(-50%, -50%);
       -webkit-transform: translate(-50%, -50%);
 
+      .page-action.hidden {
+        display: none;
+      }
       .page-action {
         box-sizing: content-box;
         border: $borderWidth solid $borderColor;

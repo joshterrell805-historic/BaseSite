@@ -1,6 +1,7 @@
 module.exports = Responder;
 
-var Draft = lib('Content/Draft');
+var Draft = lib('Content/Draft'),
+    debug = require('debug')('BaseSite:Responders:drafts:_');
 
 function Responder() {
   GuiResponder.apply(this, arguments);
@@ -30,6 +31,12 @@ Responder.prototype.methods = {
         this.stylesheets.push('/base/css/CodeMirror/lib/codemirror.css');
         this.stylesheets.push('/base/css/CodeMirror/addon/dialog/dialog.css');
         this.stylesheets.push('/base/css/CodeMirror/theme/twilight.css');
+        this.pageActions.push({href: 'javascript:previewDraft()',
+            src: '/img/icon/view.png', tooltip: 'View'});
+        this.pageActions.push({href: 'javascript:editDraft()',
+            src: '/img/icon/edit.png', tooltip: 'Edit', hidden: true});
+        this.pageActions.push({href: 'javascript:submitDraft()',
+            src: '/img/icon/submit.png', tooltip: 'Submit'});
         this.scripts = this.scripts.concat([{
           type: 'url',
           url: '/base/js/CodeMirror/lib/codemirror.js'
@@ -82,5 +89,16 @@ Responder.prototype.methods = {
       url: '/base/js/drafts/_.js'
     });
     return this.renderPage(__filename, context);
+  },
+  'POST': function* POST(cont) {
+    if (!this.session)
+      return this.redirect('303', this.pathname);
+
+    this.validateCsrf();
+    var draft = yield cont.p(Draft.find(Draft.pathnameToId(this.pathname)));
+    debug(draft);
+    var doc = yield cont.p(draft.submit());
+    debug(doc);
+    return this.redirect('303', '/' + doc.doctype + 's/' + doc.title);
   },
 };

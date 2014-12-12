@@ -62,3 +62,26 @@ function updateBackend() {
     console.error(xhr);
   }
 }
+
+function submitDraft() {
+  if (updateBackend.updating_) {
+    setTimeout(submitDraft, 50);
+  }
+  // TODO make global function/library
+  var value = encodeURIComponent(JSON.stringify({
+    csrf: $.cookie('csrf'),
+  }));
+  $('<form>', {
+    //"id": "",
+    'method': 'POST',
+    'html': '<input type="text" name="data" value="' + value + '" />',
+    'action': location.pathname
+  }).appendTo(document.body).submit();
+}
+
+function viewDraft() {
+}
+
+function editDraft() {
+}
+
