@@ -1,0 +1,21 @@
+#content > .index {
+  border: 0.2rem solid #300;
+  background-color: rgba(10, 10, 10, 0.7);
+  padding: 1.4rem; }
+  #content > .index .timestamp {
+    color: #666;
+    font-style: italic; }
+  #content > .index > .title {
+    text-align: center; }
+  #content > .index .body {
+    margin: 2rem; }
+    #content > .index .body table {
+      border: 0;
+      background-color: transparent;
+      width: 100%; }
+    #content > .index .body tr {
+      background-color: transparent; }
+      #content > .index .body tr td:nth-child(2) {
+        text-align: right; }
+  #content > .index *:last-child {
+    margin-bottom: 0; }

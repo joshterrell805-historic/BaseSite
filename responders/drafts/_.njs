@@ -11,7 +11,6 @@ Responder.prototype = Object.create(GuiResponder.prototype);
 
 Responder.prototype.methods = {
   'GET': function* GET(cont) {
-
     var context = {};
     if (!this.session) {
       context.loggedIn = false;

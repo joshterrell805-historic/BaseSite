@@ -1,0 +1,13 @@
+<div class='index row small-11 small-centered columns'>
+  <h1 class='title'>{{title}}</h1>
+  <div class='body'>
+    <table>
+    {{#each index}}
+      <tr>
+        <td><h4><a class='title' href='{{{url}}}'>{{title}}</a></h4></td>
+        <td><span class='timestamp' data-timestamp='{{timestamp}}'></span></td>
+      </tr>
+    {{/each}}
+    <table>
+  </div>
+</div>
