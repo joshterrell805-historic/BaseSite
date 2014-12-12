@@ -102,4 +102,6 @@ BaseResponder.prototype.redirect = function redirect(code, url) {
   this.setHeader('Location', url);
 }
 
+BaseResponder.prototype.POST_DATA_MAX_BYTES = 64 * 1024;
+
 BaseResponder.prototype.deleteSessionCookieStr = 'sessionId=CookieDeleted; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT; Secure';
