@@ -1,0 +1,15 @@
+<div class='doc row small-11 small-centered columns'>
+   {{#if notFound}}
+      <h1 class='title'>Article Not Found</h1>
+      <div class='body'><p>The article you requested could not be
+       found.</p></div>
+   {{else}}
+      <script>window.doc={{{doc}}};</script>
+      <div id="view">
+        {{{renderPartial '/doc/doc' this}}}
+      </div>
+      <div id="editor" class="hidden">
+        <form><textarea id="code" name="code"># yo</textarea></form>
+      </div>
+   {{/if}}
+</div>

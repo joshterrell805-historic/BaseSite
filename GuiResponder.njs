@@ -30,10 +30,10 @@ function GuiResponder() {
    },{
       type: 'url',
       url: '/base/js/TimestampToDate.js',
+   },{
+      type: 'url',
+      url: '/base/js/PageActions.js',
    }];
-
-   // [{href, src}}]
-   this.pageActions = [];
 }
 
 GuiResponder.prototype = Object.create(BaseResponder.prototype);
@@ -61,12 +61,12 @@ GuiResponder.prototype.renderPage = function renderPage(pageName, context) {
       pageTitle: this.pageTitle,
       siteTitle: site.config.title,
       session: this.session,
+      sessionStr: this.session+'',
       loginUrl: this.session ? false :
           Session.generateOauthUrl(this.pathname, csrf),
       stylesheets: this.stylesheets,
       scripts: this.scripts,
       page: pageName,
-      pageActions: this.pageActions,
       context: context,
    });
 

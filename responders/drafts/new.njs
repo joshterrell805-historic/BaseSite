@@ -14,8 +14,7 @@ Responder.prototype.methods = {
     if (this.session) {
       var id = yield cont.p(Draft.create({
         body: '',
-        title: Date.now(),
-        doctype: this.query.doctype,
+        title: 'untitled',
       }));
       return this.redirect('303', id);
     }

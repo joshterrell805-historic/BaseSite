@@ -1,0 +1,13 @@
+<h1 class='title'>{{title}}</h1>
+{{#if category}}
+  <div class='category'>{{category}}</div>
+{{/if}}
+<div class='timestamps text-center'><div>Published:
+   <span class='timestamp' data-timestamp='{{publish_ts}}'></span>
+   {{#if edit_ts}}
+     </div><div>Edited:
+     <span class='timestamp' data-timestamp='{{edit_ts}}'></span>
+   {{/if}}
+   </div></div>
+<div class='body'>{{{body}}}</div>
+<p class='text-center'><a href='#page-top'>Top</a></p>
