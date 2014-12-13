@@ -11,7 +11,13 @@ Responder.prototype = Object.create(GuiResponder.prototype);
 
 Responder.prototype.methods = {
   'GET': function* GET(cont) {
-    var doc = yield cont.p(Doc.findByTitle(Doc.pathnameToTitle(this.pathname)));
+    var title = Doc.pathnameToTitle(this.pathname);
+    if (title === 'new' && this.session) {
+      var doc = yield cont.p(Doc.create());
+      return this.redirect('303', doc.title);
+    } else {
+      var doc = yield cont.p(Doc.findByTitle(title));
+    }
 
     if (!doc || (doc.private && !this.session)) {
       this.setResponseCode('404');

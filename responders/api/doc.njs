@@ -67,5 +67,27 @@ Responder.prototype.methods = {
         message: e.message,
       });
     }
-  }
+  },
+  'DELETE': function* DELETE(cont) {
+    if (!this.session) {
+      this.setResponseCode('401');
+      return JSON.stringify({
+        success: false,
+        code: 'UNAUTHORIZED',
+      });
+    }
+    var id = this.query.id;
+    try {
+      yield cont.p(Doc.delete(id));
+      return JSON.stringify({
+        success: true,
+      });
+    } catch (e) {
+      this.setResponseCode('400');
+      return JSON.stringify({
+        success: false,
+        code: 'INVALID_ID',
+      });
+    }
+  },
 };

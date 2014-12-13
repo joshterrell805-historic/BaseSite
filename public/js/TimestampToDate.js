@@ -8,8 +8,8 @@ $(function() {
       minute:  'numeric',
    };
 
-   $('body').bind("DOMSubtreeModified", replaceWithDates);
    replaceWithDates();
+   $('body').bind("DOMSubtreeModified", replaceWithDates);
 
    /**
     * A timestamp node is a node that has the class "timestamp"

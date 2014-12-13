@@ -18,6 +18,7 @@ doc.setPrivate = setPrivate;
 doc.delete = deleteDoc;
 doc.edit = edit;
 doc.view = view;
+
 window.editor = CodeMirror.fromTextArea(
     document.getElementById("code"), {
   lineNumbers: true,
@@ -31,6 +32,8 @@ window.editor = CodeMirror.fromTextArea(
 window.editor.getDoc().on('change', updateBackend);
 editor.getDoc().setValue(doc.body);
 
+$('#editor > .title').on('input', updateBackend);
+
 function setPrivate(bool) {
   doc.private = bool;
   updateBackend();
@@ -43,6 +46,30 @@ function setPrivate(bool) {
   }
 }
 function deleteDoc() {
+  if (deleteDoc.deleting) return;
+  deleteDoc.deleting = true;
+  if (confirm("Delete the doc?") && confirm("Fasho-fasho??")) {
+    $.ajax({
+      type: 'DELETE',
+      url: '/api/doc?id=' + doc.id,
+      beforeSend: function(response) {
+        response.setRequestHeader('csrf', $.cookie('csrf'));
+      },
+      success: onSuccess,
+      error: onError,
+      processData: false,
+      datatype: 'text'
+    });
+    function onSuccess(data, textStatus, xhr) {
+      window.location = '/';
+    }
+    function onError(xhr, textStatus) {
+      alert('error updating server!');
+      console.error(xhr.responseText);
+    }
+  } else {
+    deleteDoc.deleting = false;
+  }
 }
 function edit() {
 
@@ -69,7 +96,7 @@ function updateBackend() {
 
   doc.old_hash = doc.hash;
   doc.category = null;
-  doc.title = doc.title;
+  doc.title = $('#editor > .title').html();
   doc.private = doc.private;
   doc.body = editor.getDoc().getValue();
   doc.hash = md5(doc.title + doc.body + (doc.category?doc.category:'NULL') +
