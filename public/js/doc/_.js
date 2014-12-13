@@ -5,14 +5,14 @@ if (!session)
 
 PageActions.add({id: 'edit', href: 'javascript:doc.edit()', tooltip: 'Edit'});
 PageActions.add({id: 'view', href: 'javascript:doc.view()', tooltip: 'View'});
-PageActions.add({id: 'public', href: 'javascript:doc.setPrivate(true)',
+PageActions.add({id: 'private', href: 'javascript:doc.setPrivate(true)',
     tooltip: 'Make Private'});
-PageActions.add({id: 'private', href: 'javascript:doc.setPrivate(false)',
+PageActions.add({id: 'public', href: 'javascript:doc.setPrivate(false)',
     tooltip: 'Make Public'});
 PageActions.add({id: 'delete', href: 'javascript:doc.delete()',
     tooltip: 'Delete'});
 PageActions.enable('edit');
-PageActions.enable(doc.private ? 'private' : 'public');
+PageActions.enable(doc.private ? 'public' : 'private');
 PageActions.enable('delete');
 doc.setPrivate = setPrivate;
 doc.delete = deleteDoc;
@@ -38,11 +38,11 @@ function setPrivate(bool) {
   doc.private = bool;
   updateBackend();
   if (doc.private) {
-    PageActions.disable('public');
-    PageActions.enable('private');
-  } else {
     PageActions.disable('private');
     PageActions.enable('public');
+  } else {
+    PageActions.disable('public');
+    PageActions.enable('private');
   }
 }
 function deleteDoc() {
