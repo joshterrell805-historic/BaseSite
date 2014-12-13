@@ -1,0 +1,10 @@
+#content > .page {
+  border: 0.2rem solid #300;
+  background-color: rgba(10, 10, 10, 0.7);
+  padding: 1.4rem; }
+  #content > .page > .title {
+    text-align: center; }
+  #content > .page .body {
+    margin: 2rem; }
+  #content > .page *:last-child {
+    margin-bottom: 0; }

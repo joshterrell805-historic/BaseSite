@@ -11,6 +11,7 @@ Responder.prototype = Object.create(GuiResponder.prototype);
 Responder.prototype.methods = {
   'GET': function* GET(cont) {
     var context = {};
+    this.pageTitle = 'Drafts';
     var index = yield cont.p(Draft.getIndex(this.session));
     context.index = index;
     context.title = 'Drafts';

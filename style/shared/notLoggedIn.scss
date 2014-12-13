@@ -1,0 +1,16 @@
+@import 'shared';
+
+$indent: 1.5rem;
+
+#content > .page {
+  @include main-content;
+  > .title {
+    text-align: center;
+  }
+  .body {
+    margin: $containerPadding;
+  }
+  *:last-child {
+    margin-bottom: 0;
+  }
+}
